@@ -52,20 +52,6 @@ Best fitness ≈ 8.9999979
 
 ---
 
-### Ví dụ 2: Hàm nhiều biến (Sphere)
-```python
-def sphere(sol):
-    return -sum(x**2 for x in sol)
-
-bco2 = BCO(fitness_function=sphere, B=20, NC=3, max_iterations=30, domain=(-5, 5), dim=2)
-best_sol, best_fit = bco2.run()
-print("Best solution:", best_sol, "Best fitness:", best_fit)
-```
-
- Kết quả: nghiệm gần `[0,0]` với fitness ≈ 0 (đúng cực đại toàn cục).  
-
----
-
 ##  Giải thích kết quả
 - **Ban đầu**: ong phân tán ngẫu nhiên.  
 - **Trong quá trình lặp**: ong tốt hơn có cơ hội làm recruiter, ong khác theo recruiter → dần hội tụ.  
