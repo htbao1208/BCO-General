@@ -1,4 +1,3 @@
-[README.md](https://github.com/user-attachments/files/22453299/README.md)
 #  Bee Colony Optimization (BCO) – General Version
 
 ##  Giới thiệu
