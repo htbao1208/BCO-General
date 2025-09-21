@@ -1,4 +1,4 @@
-#  Bee Colony Optimization (BCO) – General Version
+#  Bee Colony Optimization (BCO) – General
 
 ##  Giới thiệu
 Thuật toán **Bee Colony Optimization (BCO)** mô phỏng hành vi tìm kiếm thức ăn của ong mật.  
