@@ -11,7 +11,7 @@ class Bee:
 
 class BCO:
     """
-    Bee Colony Optimization (BCO) - General version
+    Bee Colony Optimization (BCO) - General
 
     Parameters
     ----------
