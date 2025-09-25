@@ -6,13 +6,15 @@ Repo này gồm phần **cài đặt tổng quát** và ví dụ **ứng dụng 
 ---
 
 ## Cấu trúc repo
-'''
+
+```
 BCO-General/
 │
-├── BCO_gen.py # Thuật toán BCO tổng quát (class Bee, class BCO)
-├── main.py # Ví dụ: chạy BCO trên hàm f(x) = -(x-3)^2 + 9
-└── tsp.py # Ứng dụng: giải Travelling Salesman Problem (TSP)
-'''
+├── BCO_gen.py   # Thuật toán BCO tổng quát (class Bee, class BCO)
+├── main.py      # Ví dụ: chạy BCO trên hàm f(x) = -(x-3)^2 + 9
+└── tsp.py       # Ứng dụng: giải Travelling Salesman Problem (TSP)
+```
+
 ---
 
 ## Cách hoạt động của BCO
@@ -52,29 +54,29 @@ def f1(sol):
 bco = BCO(fitness_function=f1, B=10, NC=3, max_iterations=15, domain=(-10, 10), dim=1)
 best_sol, best_fit = bco.run()
 print("Best solution:", best_sol, "Best fitness:", best_fit)
+```
+
 Kết quả: nghiệm hội tụ gần x=3, fitness ~9.
 
-Ví dụ 2: BCO cho TSP
-Trong tsp.py, BCO được tùy biến để giải Travelling Salesman Problem:
+---
 
-Biểu diễn nghiệm: hoán vị các thành phố (permutation).
+## Ví dụ 2: BCO cho TSP
 
-Fitness:
+Trong `tsp.py`, BCO được tùy biến để giải Travelling Salesman Problem:
 
-Copy code
-fitness(route) = -tour_length(route)
-vì BCO maximize, còn TSP cần minimize.
-
-Constructive move: áp dụng 2-opt để cải thiện tour.
-
-Recruiters & Followers: ong tốt làm recruiter, followers chọn recruiter theo roulette wheel dựa trên (1/cost^β).
-
-Stagnation limit: dừng khi không cải thiện thêm sau nhiều vòng.
+- **Biểu diễn nghiệm**: hoán vị các thành phố (permutation).  
+- **Fitness**:  
+  ```
+  fitness(route) = -tour_length(route)
+  ```
+  vì BCO maximize, còn TSP cần minimize.  
+- **Constructive move**: áp dụng 2-opt để cải thiện tour.  
+- **Recruiters & Followers**: ong tốt làm recruiter, followers chọn recruiter theo roulette wheel dựa trên (1/cost^β).  
+- **Stagnation limit**: dừng khi không cải thiện thêm sau nhiều vòng.
 
 Kết quả mẫu:
 
-yaml
-Copy code
+```
 Iter   10 | best = 4369.956
 Iter   20 | best = 4356.673
 ...
@@ -83,17 +85,17 @@ Kết thúc ở iter 111, best = 4235.482
 
 Best tour length: 4235.482
 Best route: [27, 7, 24, 12, 3, 9, 20, ...]
-Tour tìm được cũng được lưu ra file tour.csv để trực quan hóa.
+```
 
-Tham số chính
-B: số ong trong quần thể.
+Tour tìm được cũng được lưu ra file `tour.csv` để trực quan hóa.
 
-NC: số bước constructive move trong forward pass.
+---
 
-max_iterations: số vòng lặp tối đa.
+## Tham số chính
 
-domain, dim: miền và số chiều nghiệm (trong bản general).
-
-alpha, beta: tham số điều khiển loyalty và cách followers chọn recruiter (TSP).
-
-stagnation_limit: số vòng không cải thiện trước khi dừng (TSP).
+- `B`: số ong trong quần thể.  
+- `NC`: số bước constructive move trong forward pass.  
+- `max_iterations`: số vòng lặp tối đa.  
+- `domain`, `dim`: miền và số chiều nghiệm (trong bản general).  
+- `alpha`, `beta`: tham số điều khiển loyalty và cách followers chọn recruiter (TSP).  
+- `stagnation_limit`: số vòng không cải thiện trước khi dừng (TSP).
