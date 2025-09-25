@@ -11,7 +11,7 @@ Repo này gồm phần **cài đặt tổng quát** và ví dụ **ứng dụng 
 BCO-General/
 │
 ├── BCO_gen.py   # Thuật toán BCO tổng quát (class Bee, class BCO)
-├── main.py      # Ví dụ: chạy BCO trên hàm f(x) = -(x-3)^2 + 9
+├── main.py      # Chạy BCO trên hàm f(x) = -(x-3)^2 + 9 và TSP
 └── tsp.py       # Ứng dụng: giải Travelling Salesman Problem (TSP)
 ```
 
