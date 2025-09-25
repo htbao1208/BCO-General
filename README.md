@@ -1,37 +1,41 @@
-#  Bee Colony Optimization (BCO) – General Version
+# Bee Colony Optimization (BCO) – General & TSP
 
-##  Giới thiệu
+## Giới thiệu
 Thuật toán **Bee Colony Optimization (BCO)** mô phỏng hành vi tìm kiếm thức ăn của ong mật.  
-BCO gồm 2 pha lặp lại:  
-- **Forward pass**: ong tự mở rộng nghiệm trong vài bước.  
-- **Backward pass**: ong quay về tổ, chia sẻ nghiệm, rồi quyết định làm recruiter hay follower.  
+Mỗi vòng lặp gồm 2 pha chính:
 
-Ong tốt hơn dễ trở thành recruiter, ong còn lại chọn recruiter theo roulette wheel.  
-Thuật toán lặp đến khi đạt điều kiện dừng và trả về nghiệm tốt nhất.
+- **Forward pass**: mỗi ong mở rộng nghiệm của mình trong vài bước để tìm nghiệm tốt hơn.  
+- **Backward pass**: ong quay về tổ, chia sẻ nghiệm. Ong có nghiệm tốt trở thành **recruiter**, ong khác trở thành **followers** và chọn recruiter theo roulette wheel.  
 
----
-
-##  Cấu trúc chính
-- `Bee`: lưu `solution` và `fitness`.  
-- `BCO`: lớp chính với các hàm:  
-  - `initialize`: khởi tạo ong ngẫu nhiên.  
-  - `constructive_move`: sinh bước đi mới quanh nghiệm.  
-  - `forward_pass`: mỗi ong khám phá NC bước.  
-  - `backward_pass`: đánh giá và xếp hạng ong.  
-  - `loyalty_probability`: xác suất ong giữ nghiệm riêng.  
-  - `select_recruiters`: chọn recruiter.  
-  - `roulette_choose_recruiter`: follower chọn recruiter.  
-  - `run`: vòng lặp chính.  
+Quá trình này giúp cả đàn ong vừa khai phá (exploration) vừa khai thác (exploitation), dần dần tiến tới nghiệm tốt nhất.
 
 ---
 
-##  Ví dụ chạy thử
+## Cấu trúc repo
+- `BCO_gen.py`  
+  - `Bee`: lưu nghiệm (`solution`) và giá trị (`fitness`).  
+  - `BCO`: cài đặt tổng quát gồm các bước khởi tạo, forward, backward, chọn recruiter, cập nhật nghiệm tốt nhất.  
 
-### Ví dụ 1: Hàm 1 biến
+- `main.py`  
+  Ví dụ chạy BCO trên hàm đơn giản \( f(x) = -(x-3)^2 + 9 \).  
+
+- `tsp.py`  
+  Ví dụ áp dụng BCO cho bài toán **Travelling Salesman Problem (TSP)**.  
+
+---
+
+## Hoạt động của BCO tổng quát
+1. **Khởi tạo**: sinh quần thể ong ngẫu nhiên trong miền giá trị.  
+2. **Forward pass**: mỗi ong thực hiện `NC` lần constructive move để cải thiện nghiệm.  
+3. **Backward pass**: chọn recruiters theo fitness. Followers chọn recruiter theo roulette wheel.  
+4. **Cập nhật nghiệm tốt nhất**.  
+5. **Lặp** đến khi đạt số vòng lặp tối đa.  
+
+---
+
+## Ví dụ 1: General benchmark
 ```python
-# Hàm: f(x) = -(x-3)^2 + 9
-# Cực đại tại x=3, giá trị f(3)=9
-from bco_general import BCO
+from BCO_gen import BCO
 
 def f1(sol):
     x = sol[0]
@@ -40,49 +44,104 @@ def f1(sol):
 bco = BCO(fitness_function=f1, B=10, NC=3, max_iterations=15, domain=(-10, 10), dim=1)
 best_sol, best_fit = bco.run()
 print("Best solution:", best_sol, "Best fitness:", best_fit)
-```
+Kết quả: nghiệm hội tụ gần 
+𝑥
+=
+3
+x=3, fitness ~9 (đúng cực đại lý thuyết).
 
- Kết quả:  
-```
-Best solution ≈ 3.00145
-Best fitness ≈ 8.9999979
-```
+Ví dụ 2: BCO cho TSP
+Trong tsp.py, BCO được tùy biến cho bài toán TSP với các điểm khác biệt:
 
- Thuật toán tìm được nghiệm gần **x=3** với fitness gần **9**, rất sát cực đại lý thuyết.
+Biểu diễn nghiệm
+Nghiệm là hoán vị (permutation) của các thành phố, ví dụ [0, 2, 1, 3] là thứ tự đi qua 4 thành phố.
 
----
+Hàm đánh giá (fitness)
+Mục tiêu: minimize độ dài tour.
 
-### Ví dụ 2: Hàm nhiều biến (Sphere)
-```python
-def sphere(sol):
-    return -sum(x**2 for x in sol)
+Vì BCO tổng quát là maximize, ta định nghĩa:
 
-bco2 = BCO(fitness_function=sphere, B=20, NC=3, max_iterations=30, domain=(-5, 5), dim=2)
-best_sol, best_fit = bco2.run()
-print("Best solution:", best_sol, "Best fitness:", best_fit)
-```
+\text{fitness(route)} = -\text{tour_length(route)}
+Constructive move (khai thác nghiệm)
+Sử dụng 2-opt local search: chọn ngẫu nhiên 2 cạnh trong tour, đảo ngược đoạn giữa → có thể giảm chiều dài tour.
 
- Kết quả: nghiệm gần `[0,0]` với fitness ≈ 0 (đúng cực đại toàn cục).  
+Loyalty & Recruiters
+Loyalty probability được tính theo công thức hàm mũ:
 
----
+𝑝
+=
+exp
+⁡
+(
+−
+𝛼
+⋅
+cost
+−
+best_cost
+best_cost
+)
+p=exp(−α⋅ 
+best_cost
+cost−best_cost
+​
+ )
+→ route càng tệ thì ong càng dễ bỏ nghiệm riêng và theo recruiter.
 
-##  Giải thích kết quả
-- **Ban đầu**: ong phân tán ngẫu nhiên.  
-- **Trong quá trình lặp**: ong tốt hơn có cơ hội làm recruiter, ong khác theo recruiter → dần hội tụ.  
-- **Kết thúc**: nghiệm gần cực đại toàn cục.  
+Recruiters: ong có route tốt sẽ được chọn làm recruiter.
 
-Ví dụ với hàm `f(x) = -(x-3)^2 + 9`:  
-- Iter 1: ong tìm nghiệm quanh `x≈3.1`, fitness ≈ 8.99.  
-- Iter 2–7: fitness tăng dần lên 8.9999, nghiệm dao động quanh [2.99–3.01].  
-- Iter 8–15: nghiệm hội tụ về ~3.001, fitness ~8.999998 ≈ 9.  
+Followers: chọn recruiter theo roulette wheel với trọng số 
+(
+1
+/
+𝑐
+𝑜
+𝑠
+𝑡
+)
+𝛽
+(1/cost) 
+β
+ .
 
- Điều này cho thấy BCO tìm kiếm đúng hướng và hội tụ về nghiệm tối ưu.  
+Điều kiện dừng
+Ngoài số vòng lặp tối đa, tsp.py có thêm stagnation_limit: nếu sau X vòng không cải thiện nghiệm tốt nhất, thuật toán dừng sớm.
 
----
+Quy trình chạy
+Khởi tạo ngẫu nhiên một số tour.
 
-##  Tham số
-- `B`: số ong (10–50).  
-- `NC`: số bước xây dựng (3–5).  
-- `max_iterations`: số vòng lặp.  
-- `domain`: miền tìm kiếm.  
-- `dim`: số chiều nghiệm.  
+Mỗi vòng:
+
+Ong recruiter áp dụng 2-opt mạnh để cải thiện.
+
+Ong follower: hoặc tiếp tục cải thiện nghiệm riêng, hoặc copy route recruiter và cải thiện.
+
+Cập nhật tour ngắn nhất tìm được.
+
+Dừng khi đạt max_iterations hoặc vượt quá stagnation_limit.
+
+Kết quả mẫu
+yaml
+Copy code
+Iter   10 | best = 4369.956
+Iter   20 | best = 4356.673
+...
+Iter  100 | best = 4235.482
+Kết thúc ở iter 111, best = 4235.482
+
+Best tour length: 4235.482
+Best route (index): [27, 7, 24, 12, 3, 9, ...]
+Tour thu được được ghi vào file tour.csv để trực quan hóa hoặc vẽ.
+
+Tham số chính
+B: số ong.
+
+NC: số bước xây dựng trong forward pass.
+
+max_iterations: số vòng lặp tối đa.
+
+domain, dim: dùng cho biến thực trong bản general.
+
+alpha, beta: điều khiển loyalty và xác suất follower chọn recruiter trong TSP.
+
+stagnation_limit: số vòng không cải thiện → dừng sớm (chỉ trong tsp.py).
