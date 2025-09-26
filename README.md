@@ -1,7 +1,7 @@
 # Bee Colony Optimization (BCO) – General & TSP
 
 Thuật toán **Bee Colony Optimization (BCO)** mô phỏng hành vi tìm kiếm thức ăn của ong mật.  
-Repo này gồm phần **cài đặt tổng quát** và ví dụ **ứng dụng cho Travelling Salesman Problem (TSP)**.
+Repo này gồm phần **cài đặt tổng quát**, **chạy thử kết quả bằng hàm số bậc 2** và ví dụ **ứng dụng bài toán Travelling Salesman Problem (TSP)**.
 
 ---
 
@@ -11,8 +11,8 @@ Repo này gồm phần **cài đặt tổng quát** và ví dụ **ứng dụng 
 BCO-General/
 │
 ├── BCO_gen.py   # Thuật toán BCO tổng quát (class Bee, class BCO)
-├── main.py      # Chạy BCO trên hàm f(x) = -(x-3)^2 + 9 và TSP
-└── tsp.py       # Ứng dụng: giải Travelling Salesman Problem (TSP)
+├── tsp.py       # Ứng dụng: giải bài toán Travelling Salesman Problem (TSP)
+└── main.py      # Chạy BCO trên hàm f(x) = -(x-3)^2 + 9 và TSP
 ```
 
 ---
@@ -38,10 +38,18 @@ BCO-General/
    hoặc dừng sớm nếu có stagnation limit (trong TSP).
 
 ---
-
+```bash
+# Chạy chương trình
+py main.py
+```
+## Sẽ suất hiện 2 lựa chọn 1 và 2 tương ứng của VD1 và VD2
+```bash
+=== Chạy Bee Colony Optimization (BCO) ===
+1. General benchmark (f1(x) = -(x-3)^2 + 9)
+2. Travelling Salesman Problem (TSP)
+Chọn chế độ (1 hoặc 2): 
+```
 ## Ví dụ 1: BCO tổng quát
-
-Trong `main.py`:
 
 ```python
 from BCO_gen import BCO
