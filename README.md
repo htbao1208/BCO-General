@@ -38,8 +38,8 @@ BCO-General/
    hoặc dừng sớm nếu có stagnation limit (trong TSP).
 
 ---
+## Chạy chương trình
 ```bash
-# Chạy chương trình
 py main.py
 ```
 ## Sẽ suất hiện 2 lựa chọn 1 và 2 tương ứng của VD1 và VD2
